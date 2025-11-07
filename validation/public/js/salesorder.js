@@ -29,8 +29,14 @@ frappe.ui.form.on('Sales Order Item', {
                 if (default_supplier && default_supplier.trim() === "Evil Company") {
                     // Prevent the user from leaving the field as-is
                     frappe.msgprint("We won't sell products of Evil Company.");
-                }
-            }
-        });
-    }
-});
+              // Clear the item_code so they must choose something else
+              frappe.model.set_value(cdt, cdn, "item_code", "");
+              // Also clear fields that depend on item (optional)
+              frappe.model.set_value(cdt, cdn, "item_name", "");
+              frappe.model.set_value(cdt, cdn, "qty", 0);
+              // refresh the grid row
+              frm.refresh_field("items");
+          }
+      }
+  });
+}
